@@ -44,25 +44,27 @@ namespace AvlTreeSample
 
             root.Height = Math.Max(Height(root.LeftChild), Height(root.RightChild)) + 1;
 
-            Balance(root);
+          SetHeight(root);
 
-            return root;
+          return Balance(root);
         }
 
-        private void Balance(AVLNode root)
+        private AVLNode Balance(AVLNode root)
         {
             if (IsLeftHeavy(root))
             {
                 if (BalanceFactor(root.LeftChild) < 0)
-                    Console.WriteLine("Left Rotate" + root.LeftChild.Value);
-                Console.WriteLine("Left Rotate " + root.Value);
+                    root.LeftChild = RotateLeft(root.LeftChild);
+              return  RotateRight(root);
             }
             else if (IsRightHeavy(root))
             {
                 if(BalanceFactor(root.RightChild) > 0)
-                    Console.WriteLine("Right Rotate" + root.RightChild.Value);
-                Console.WriteLine("Left Rotate " + root.Value);
+                    root.RightChild = RotateRight(root.RightChild);
+               return RotateLeft(root);
             }
+            return root;
+            
         }
 
         private AVLNode RotateLeft(AVLNode root)
@@ -71,8 +73,23 @@ namespace AvlTreeSample
             root.RightChild = newRoot.LeftChild;
             newRoot.LeftChild = root;
 
+            SetHeight(root);
+            SetHeight(newRoot);
+
+            return newRoot;
         }
 
+        private AVLNode RotateRight(AVLNode root)
+        {
+            var newRoot = root.LeftChild;
+            root.LeftChild = newRoot.RightChild;
+            newRoot.RightChild = root;
+
+            SetHeight(root);
+            SetHeight(newRoot);
+
+            return newRoot;
+        }
         private void SetHeight(AVLNode node)
         {
             node.Height = Math.Max(Height(root.LeftChild), Height(root.RightChild)) + 1;
